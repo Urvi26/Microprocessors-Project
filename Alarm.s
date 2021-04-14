@@ -1,10 +1,10 @@
 #include <xc.inc>
 
-extrn	clock_sec, clock_min, clock_hrs
-extrn	Write_ALARM, Write_Snooze
-extrn	Keypad, keypad_val
-extrn	LCD_delay_x4us, LCD_Set_to_Line_2, LCD_Clear
-extrn	hex_C, hex_A, skip_byte
+extrn	clock_sec, clock_min, clock_hrs			;external clock subroutines
+extrn	Write_ALARM, Write_Snooze			;external write and display subroutines
+extrn	Keypad, keypad_val				;external keypad subroutines
+extrn	LCD_delay_x4us, LCD_Set_to_Line_2, LCD_Clear	;external LCD subroutines
+extrn	hex_C, hex_A, skip_byte				;external clock subroutines
     
 global	alarm_sec, alarm_min, alarm_hrs
 global	Check_Alarm, Alarm_Setup
@@ -129,9 +129,9 @@ No_Buzz:    ;delay by 2 x 128 = 256 us
 	
 Yes_Buzz:	
 	bsf	LATB, 6, A	;Buzzer Ouput high
-	call	Delay_Buzzer	
+	call	Delay_Buzzer	;delay 128us
 	bcf	LATB, 6, A	;Buzzer Ouput low
-	call	Delay_Buzzer
+	call	Delay_Buzzer	;delay 128 us
 	return	
 	
 Delay_Buzzer:	;128 us delay
@@ -149,7 +149,7 @@ Snooze_Alarm:	;stop alarm going off and set new alarm for five mins after origin
 	clrf	alarm_countdown, A  ;clear alarm_countdown
 	call	Write_Snooze	    ;Write snooze to LCD
 	
-	movlw	0x05	;move 0x05 to W	    
+	movlw	0x05		;move 0x05 to W	    
 	addwf	alarm_min, A	;add W to alarm_min
 	movlw	0x3B		;move 0x3B = dec 59 to W        
 	CPFSGT	alarm_min, A	;check if alarm_min greater than 59 and skip if so 

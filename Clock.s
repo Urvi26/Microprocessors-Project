@@ -55,11 +55,11 @@ Clock:
 	retfie	f		; if not then return
 	call	Clock_Inc	; increment clock time
 	movff	timer_start_value_1, TMR0H	;setting upper byte timer start value
-	movff	timer_start_value_2, TMR0L		;setting lower byte timer start value
+	movff	timer_start_value_2, TMR0L	;setting lower byte timer start value
 	bcf	TMR0IF		; clear interrupt flag
 	btfss	operation_check, 0, A ;skip rewrite clock if = 1
 	call	Rewrite_Clock	;write and display clock time as decimal on LCD 
-	call	Check_Alarm
+	call	Check_Alarm	
 	retfie	f		; fast return from interrupt	
 
 Rewrite_Clock:
@@ -85,20 +85,20 @@ Rewrite_Clock:
 
 Clock_Inc:	
 	incf	clock_sec, A	    ;increase seconds time by one
-	movf	clock_sec, W, A	   
+	movf	clock_sec, W, A	    ;move clock_sec to W register for comparison
 	cpfseq	check_60, A	    ;check clock seconds is equal than 60
 	return			    ;return if not equal to 60
 	clrf	clock_sec, A	    ;set second time to 0 if was equal to 60
 	incf	clock_min, A	    ;increase minute time by one
-	movf	clock_min, W, A
+	movf	clock_min, W, A	    ;move clock_min to W register for comparison
 	cpfseq	check_60, A	    ;check if minute time equal to 60
-	return
+	return			    ;return if not equal to 60
 	clrf	clock_min, A	    ;set minute time to 0 if = 60
 	incf	clock_hrs, A	    ;increase hour time by one
-	movf	clock_hrs, W, A	
+	movf	clock_hrs, W, A	    ;move clock_hrs to W register for comparison
 	cpfseq	check_24, A	    ;check if hour time equal to 24
-	return	
+	return			    ;return if not equal to 24
 	clrf	clock_hrs, A	    ;set hour time to 0 if = 24
-	return
+	return			    ;return after setting time
 
 
